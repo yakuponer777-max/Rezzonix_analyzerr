@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rezzonix Analyzer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 30px;
+            background: #f5f5f5;
+        }
+        h1 {
+            color: #2c3e50;
+        }
+        select, button {
+            padding: 10px;
+            margin: 10px;
+            font-size: 16px;
+        }
+        #result {
+            margin-top: 30px;
+            font-weight: bold;
+            color: #2980b9;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔬 Rezzonix Analyzer</h1>
+    <p>Hastalığı seçin ve frekans önerisini görün.</p>
+
+    <select id="diseaseSelect">
+        <option value="">-- Hastalık Seç --</option>
+        <option value="Bel Fıtığı">Bel Fıtığı</option>
+        <option value="Baş Ağrısı">Baş Ağrısı</option>
+        <option value="Grip">Grip</option>
+        <option value="Gastrit">Gastrit</option>
+    </select>
+    <br>
+    <button onclick="showFrequency()">Frekans Öner</button>
+
+    <div id="result"></div>
+
+    <script>
+        const frequencies = {
+            "Bel Fıtığı": "10 Hz - 15 Hz",
+            "Baş Ağrısı": "5 Hz - 10 Hz",
+            "Grip": "2 Hz - 8 Hz",
+            "Gastrit": "8 Hz - 12 Hz"
+        };
+
+        function showFrequency() {
+            const disease = document.getElementById('diseaseSelect').value;
+            const resultDiv = document.getElementById('result');
+            if(disease === "") {
+                resultDiv.textContent = "Lütfen bir hastalık seçin!";
+            } else {
+                resultDiv.textContent = disease + " için önerilen frekans: " + frequencies[disease];
+            }
+        }
+    </script>
+</body>
+</html><!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rezzonix Analyzer</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+    body { font-family: Arial, sans-serif; text-align: center; padding: 30px; background: #f5f5f5; }
+    h1 { color: #2c3e50; }
+    select, button { padding: 10px; margin: 10px; font-size: 16px; }
+    #result { margin-top: 20px; font-weight: bold; color: #2980b9; }
+    canvas { max-width: 90%; margin-top: 30px; }
+</style>
+</head>
+<body>
+<h1>🔬 Rezzonix Analyzer</h1>
+<p>Hastalığı seçin ve frekans önerisini görün.</p>
+
+<select id="diseaseSelect">
+    <option value="">-- Hastalık Seç --</option>
+    <option value="Bel Fıtığı">Bel Fıtığı</option>
+    <option value="Baş Ağrısı">Baş Ağrısı</option>
+    <option value="Grip">Grip</option>
+    <option value="Gastrit">Gastrit</option>
+</select>
+<button onclick="showFrequency()">Frekans Öner</button>
+
+<div id="result"></div>
+<canvas id="freqChart"></canvas>
+
+<script>
+const frequencies = {
+    "Bel Fıtığı": [10, 12, 14, 15],
+    "Baş Ağrısı": [5, 6, 8, 10],
+    "Grip": [2, 4, 6, 8],
+    "Gastrit": [8, 9, 10, 12]
+};
+
+let chart; // grafik objesi
+
+function showFrequency() {
+    const disease = document.getElementById('diseaseSelect').value;
+    const resultDiv = document.getElementById('result');
+    const ctx = document.getElementById('freqChart').getContext('2d');
+
+    if(disease === "") {
+        resultDiv.textContent = "Lütfen bir hastalık seçin!";
+        if(chart) { chart.destroy(); }
+        return;
+    }
+
+    const freqValues = frequencies[disease];
+    // Analiz sonucu: hastalık + frekans
+    resultDiv.innerHTML = `<strong>Analiz Sonucu:</strong><br>Hastalık: ${disease}<br>Önerilen Frekans: ${freqValues.join(" Hz, ")} Hz`;
+
+    // Grafiği oluştur
+    if(chart) { chart.destroy(); }
+    chart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: freqValues.map(f => f + " Hz"),
+            datasets: [{
+                label: disease + ' Frekans Önerisi',
+                data: freqValues,
+                backgroundColor: '#2980b9'
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { display: false },
+                title: { display: true, text: disease + ' Frekans Grafiği' }
+            },
+            scales: { y: { beginAtZero: true } }
+        }
+    });
+}
+</script>
+</body>
+</html>
